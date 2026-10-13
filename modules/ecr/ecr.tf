@@ -1,9 +1,14 @@
-
-variable "repository_name" {
-  description = "Name of the ECR repository"
-  type        = string
-}
-
 resource "aws_ecr_repository" "project_repo" {
-  name = var.repository_name
+  for_each = var.repository_names
+
+  name                 = "${var.project_name}-${each.value}"
+  image_tag_mutability = var.image_tag_mutability
+
+  image_scanning_configuration {
+    scan_on_push = var.scan_on_push
+  }
+
+  encryption_configuration {
+    encryption_type = "AES256"
+  }
 }
